@@ -89,12 +89,6 @@ while true; do
                 fi
             wait
             echo -e "${GREEN}System Updated Successfully!${NC}"
-            # Copy maintenance-pureos.shh to home directory
-                cd scripts || exit
-                cp -f maintenance-pureos.sh /home/"$username"
-                chown "$username":"$username" /home/"$username"/debian-maintenance.sh
-                cd "$builddir" || exit
-            echo -e "${GREEN}maintenance-pureos.sh Copied To Home Directory${NC}"
             echo -e "${YELLOW}Installing Core Dependencies...${NC}"
                 cd scripts || exit
                 chmod u+x step-1.sh
