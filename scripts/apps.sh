@@ -20,36 +20,73 @@ wait
     sudo apt install cups -y
     sudo apt install seahorse -y
     sudo apt install rename -y
-    sudo apt install gnome-calculator -y
-    wait
-    flatpak install flathub org.libreoffice.LibreOffice -y
-    flatpak install https://flathub.org/beta-repo/appstream/org.gimp.GIMP.flatpakref -y
-    flatpak install flathub org.gnome.SimpleScan -y
-    flatpak install flathub org.qbittorrent.qBittorrent -y
-    flatpak install flathub io.missioncenter.MissionCenter -y
-    flatpak install flathub com.github.tchx84.Flatseal -y
+    sudo apt install fwupd -y
+    sudo apt install w3m -y
+    sudo flatpak install flathub io.missioncenter.MissionCenter -y
+#    sudo flatpak install flathub com.nextcloud.desktopclient.nextcloud -y
 
-# Waydroid
-    sudo apt install curl ca-certificates -y
-    curl -s https://repo.waydro.id | sudo bash
-    sudo apt install waydroid -y
+
+# Waydroid - check if available in apt, otherwise install from repo
+    if sudo apt install waydroid -y; then
+        echo "waydroid installed via apt"
+    else
+        echo "waydroid not available in apt, installing from repo.waydro.id"
+        sudo apt install curl ca-certificates -y
+        curl -s https://repo.waydro.id | sudo bash
+        sudo apt install waydroid -y
+    fi
 
 # Nvim & Depends
-    sudo apt install neovim -y
-    sudo apt install python3-pip -y
+    brew tap austinliuigi/brew-neovim-nightly https://github.com/austinliuigi/brew-neovim-nightly.git
+    brew install neovim-nightly
     sudo apt install lua5.4 -y
+    sudo apt install python3-pip -y
+    sudo apt install chafa -y
+    sudo apt install ripgrep -y
 
-# Synology Drive
-    wget "https://global.download.synology.com/download/Utility/SynologyDriveClient/3.4.0-15724/Ubuntu/Installer/synology-drive-client-15724.x86_64.deb"
-    wait
-    sudo dpkg -i synology-drive-client-15724.x86_64.deb
-    wait
-    rm synology-drive-client-15724.x86_64.deb
-    sudo apt --fix-broken install -y
+# Install yazi
+    brew install yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide imagemagick font-symbols-only-nerd-font
+# Install plugins
+    ya pkg add dedukun/bookmarks
+    ya pkg add yazi-rs/plugins:mount
+    ya pkg add dedukun/relative-motions
+    ya pkg add yazi-rs/plugins:chmod
+    ya pkg add yazi-rs/plugins:smart-enter
+    ya pkg add AnirudhG07/rich-preview
+    ya pkg add grappas/wl-clipboard
+    ya pkg add Rolv-Apneseth/starship
+    ya pkg add yazi-rs/plugins:full-border
+    ya pkg add uhs-robert/recycle-bin
+    ya pkg add yazi-rs/plugins:diff
+
+# Firewall
+    sudo apt install ufw -y
+    sudo ufw allow OpenSSH
+    sudo ufw allow SSH
+    sudo ufw enable
 
 ## Tailscale
-    curl -fsSL https://tailscale.com/install.sh | sh
+    # Have to install manually, distro isnt recognized yet
+    wget https://pkgs.tailscale.com/stable/tailscale_1.90.9_arm64.tgz
+    tar xzf tailscale_1.90.9_arm64.tgz
+    cd tailscale_1.90.9_arm64/
+    # Update service file to use correct binary paths before moving it
+    sed -i 's|/usr/sbin/tailscaled|/usr/local/bin/tailscaled|g' systemd/tailscaled.service
+    sudo mv tailscale /usr/local/bin/tailscale
+    sudo mv tailscaled /usr/local/bin/tailscaled
+    sudo mv systemd/tailscaled.service /etc/systemd/system/tailscaled.service
+    sudo mv systemd/tailscaled.defaults /etc/default/tailscaled 
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now tailscaled.service
+    echo "Tailscale installed, please run 'sudo tailscale up' to login"
+    cd $builddir || exit
+
+# Proton VPN
+    wget https://repo.protonvpn.com/debian/dists/unstable/main/binary-all/protonvpn-beta-release_1.0.8_all.deb
     wait
+    sudo dpkg -i ./protonvpn-beta-release_1.0.8_all.deb && sudo apt update
+    sudo apt install proton-vpn-gnome-desktop -y
+    rm protonvpn-beta-release_1.0.8_all.deb
 
 # Overkill is underrated 
     sudo apt update && upgrade -y

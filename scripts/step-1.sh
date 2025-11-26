@@ -38,8 +38,6 @@ fi
 # deb https://repo.pureos.net/pureos byzantium-security main
 # deb https://repo.pureos.net/pureos byzantium-updates main" | sudo tee -a /etc/apt/sources.list
 
-# Add Flathub Repo
-flatpak remote-add --if-not-exists --subset=floss flathub-floss https://flathub.org/repo/flathub.flatpakrepo
 
 # Overkill is underrated 
 apt update && upgrade -y
@@ -60,14 +58,26 @@ apt auto-remove -y
 wait
 
 echo "Install Essentials"
-  sudo apt install zip unzip gzip tar -y
-  sudo apt install make -y
-  sudo apt install curl -y
-  sudo apt install neovim -y
-  sudo apt install dconf* -y
-  sudo apt install gnome-tweaks -y
-  sudo apt install papirus-icon-theme -y
-  wait
+    sudo apt install zip unzip gzip tar -y
+    sudo apt install make -y
+    sudo apt install curl -y
+    sudo apt install dconf* -y
+    sudo apt install gnome-tweaks -y
+    sudo apt install papirus-icon-theme -y
+    sudo apt install neovim -y
+    wait
+
+# Add Flathub Repo
+    flatpak remote-add --if-not-exists --subset=floss flathub-floss https://flathub.org/repo/flathub.flatpakrepo
+
+# Install Brew
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Add Brew to PATH
+    echo >> /home/droidian/.bashrc
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/droidian/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    sudo apt-get install build-essential -y
+    brew install gcc
 
 # Installing fonts
     echo "Installing Fonts"
@@ -83,6 +93,13 @@ echo "Install Essentials"
 # Reload Font
     fc-cache -vf
     wait
+
+# Enable GPS on Modems
+    sudo mmcli -m any --location-enable-gps-nmea --location-enable-gps-raw
+
+# Screenshot with phosh
+    sudo apt-get install wl-clipboard
+    wl-paste > ~/Pictures/Screenshots/"$(date +'%Y-%m-%d_%H:%M:%S').png"
 
 
 reboot
