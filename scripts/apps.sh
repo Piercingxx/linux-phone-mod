@@ -22,6 +22,7 @@ wait
     sudo apt install rename -y
     sudo apt install fwupd -y
     sudo apt install w3m -y
+    sudo apt install kitty -y
     sudo flatpak install flathub io.missioncenter.MissionCenter -y
 
 # Waydroid - check if available in apt, otherwise install from repo
