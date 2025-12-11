@@ -113,7 +113,3 @@ echo "Install Essentials"
 # Screenshot with phosh
     sudo apt-get install wl-clipboard
     wl-paste > ~/Pictures/Screenshots/"$(date +'%Y-%m-%d_%H:%M:%S').png"
-
-echo "Step 1 Complete! Press Enter to reboot"
-read -r _
-sudo reboot now
